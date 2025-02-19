@@ -119,7 +119,7 @@ bool bob_irq(repeating_timer_t* rt) {
     gpio_put(LED_B, 1);
     // adc_index = 0; //! @attention This is for debugging. Remove after functionality has been verified.
     // adc_index = 1; //! @attention This is for debugging. Remove after functionality has been verified.
-    adc_index = adc_index % 2; //! is 1 or 0. for testing
+    // adc_index = adc_index % 2; //! is 1 or 0. for testing
     miso_index = (adc_index + 6) % 8;
     
     // gpio_put(Bob_CNV, 0); //! Set CNV low to start conversion
