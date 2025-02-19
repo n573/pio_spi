@@ -81,13 +81,13 @@ uint sm = 0;
     // Set pin directions
     // pio_sm_set_consecutive_pindirs(pio, sm, KB0, 1, true);  // set KB0 to output -- redundant if Bob_* is set to KB0/KB1
     // pio_sm_set_consecutive_pindirs(pio, sm, KB1, 1, true);  // set KB1 to output
-    // pio_sm_set_consecutive_pindirs(pio, sm, Bob_CNV, 3, true);   // SCK=10, CNV=9, MOSI=11, outputs (pins are sequential)
+    pio_sm_set_consecutive_pindirs(pio, sm, Bob_CNV, 3, true);   // SCK=10, CNV=9, MOSI=11, outputs (pins are sequential)
     // pio_sm_set_consecutive_pindirs(pio, sm, Bob_SCK, 2, true);   // SCK=10, MOSI=11, outputs (pins are sequential)
     pio_sm_set_consecutive_pindirs(pio, sm, Bob_MISO, 1, false); // MISO=12,  input
     //! @note these are set up individually because while SCK and MOSI are sequential, KB0 and KB1 are not so for debug purposes they need to be separate calls
-    pio_sm_set_consecutive_pindirs(pio, sm, Bob_SCK, 1, true);   
-    pio_sm_set_consecutive_pindirs(pio, sm, Bob_MOSI, 1, true);
-    pio_sm_set_consecutive_pindirs(pio, sm, Bob_CNV, 1, true);
+    // pio_sm_set_consecutive_pindirs(pio, sm, Bob_SCK, 1, true);   
+    // pio_sm_set_consecutive_pindirs(pio, sm, Bob_MOSI, 1, true);
+    // pio_sm_set_consecutive_pindirs(pio, sm, Bob_CNV, 1, true);
 
     // Configure shift registers for 16-bit operation
     // sm_config_set_out_shift(&c[1], true, true, 16);   // Right shift, autopull, 16 bits
@@ -239,7 +239,8 @@ int main()
     // Start timer with 2ms period (500Hz)
     /// @note actual interrupt is supposed to run at 500kHz (2us period)
     // add_repeating_timer_ms(2, bob_irq, NULL, &timer);
-    add_repeating_timer_us(20, bob_irq, NULL, &timer);
+    add_repeating_timer_us(2, bob_irq, NULL, &timer);
+    // add_repeating_timer_us(20, bob_irq, NULL, &timer);
     // add_repeating_timer_us(2000, bob_irq, NULL, &timer);
     // add_repeating_timer_us(4000, bob_irq, NULL, &timer); //! @attention trying a longer delay to see if that is causing problems
     
