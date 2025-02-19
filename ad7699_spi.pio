@@ -3,7 +3,7 @@
 
 .side_set 1 opt    ; For SCK pin
 .define CNV_PIN 9
-; .define CNV_PIN 25
+
 
 .wrap_target
     pull block       side 0   ; Wait for configuration data
@@ -15,26 +15,18 @@
     set x, 2            ; MIGHT have to be 1, might need another way
 bitloop:
     out pins, 1    [2] side 1    ; Output MOSI bit
-; in_loop:
-    ; set pins, 1     [1]   ; SCK high
     in pins, 1      ;[2] side 0  ; Sample MISO (on same cycle as MOSI)
-    ; set pins, 0     [1]   ; SCK low
-    jmp !OSRE bitloop [2] side 0   ; checks if OSR is empty, if not empty branch to bitloop
-    ; jmp in_loop2
+    jmp !OSRE bitloop [1] side 0   ; checks if OSR is empty, if not empty branch to bitloop
     jmp tmp_jmp
 
 in_loop2:
-    ; set pins, 1     [1]   ; SCK high
     in pins, 1      [2]  side 0 ; Sample MISO (on same cycle as MOSI)
-    ; set pins, 0     [1]   ; SCK low
 tmp_jmp:
     jmp x-- in_loop2  [2] side 1 ; Loop for all 16 bits
-
-    ; set pins, 1     [1]   ; SCK high
-    ; set pins, 0     [1]   ; SCK low
 
     nop [4]
     set pins, 1       ; Pull CNV high to end conversion
     ; in y, 16            ; transfers the y scratch register to ISR to be pushed out
+    in null, 16         ; adds 16 0s right of the LSB so our data can be left-shifted out properly
     push block         ; Push received 16-bit data
 .wrap

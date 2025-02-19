@@ -45,15 +45,9 @@ uint sm = 0;
  void ad7699_pio_init() {
     uint offset;
     pio_sm_config c;
-    // uint sm_mask = (1 << sm[0] | 1 << sm[1]);
     // Get first available PIO and state machine
     PIO pio = pio0;
-    // pio_claim_sm_mask(pio, sm_mask);
-    // sm = pio_claim_unused_sm(pio, true); //! should give us sm = 0 -- confirmed
     sm = pio_claim_unused_sm(pio, true); //! should give us sm = 0 -- confirmed
-    // sm[1] = pio_claim_unused_sm(pio, true); //! should give us sm = 1 -- confirmed
-    // sm[2] = pio_claim_unused_sm(pio, true); //! should give us sm = 2 -- confirmed
-    // uint offset = pio_add_program(pio, &ad7699_program);
     offset = pio_add_program(pio, &ad7699_spi_program);
 
     for(int i=0; i<NUM_SM_USING; i++) {
@@ -124,7 +118,8 @@ bool bob_irq(repeating_timer_t* rt) {
     gpio_put(LED_G, 1);
     gpio_put(LED_B, 1);
     // adc_index = 0; //! @attention This is for debugging. Remove after functionality has been verified.
-    adc_index = 1; //! @attention This is for debugging. Remove after functionality has been verified.
+    // adc_index = 1; //! @attention This is for debugging. Remove after functionality has been verified.
+    adc_index = adc_index % 2; //! is 1 or 0. for testing
     miso_index = (adc_index + 6) % 8;
     
     // gpio_put(Bob_CNV, 0); //! Set CNV low to start conversion
@@ -137,7 +132,8 @@ bool bob_irq(repeating_timer_t* rt) {
     
     // Send configuration with blocking
     // pio_sm_put_blocking(pio, sm, (adc_cfg[adc_index]<<2)); //! Shift by 2 to align the MSB to a 16bit bit-string
-    pio_sm_put_blocking(pio, sm, adc_cfg[adc_index]);
+    // pio_sm_put_blocking(pio, sm, (uint32_t)adc_cfg[adc_index]);
+    pio_sm_put_blocking(pio, sm, (uint32_t)(adc_cfg[adc_index]<<18)); /// @attention  Aligns MSB with bit 31
     // printf("CFG %d: %d\n", adc_index, adc_cfg[adc_index]);
 
     // Check if RX FIFO has data
