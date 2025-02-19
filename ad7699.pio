@@ -1,0 +1,22 @@
+; // PIO program to implement AD7699 communication
+.program ad7699
+.side_set 1 opt    ; For CNV pin
+
+.wrap_target
+    pull block          ; Wait for configuration data
+    nop         side 0  ; Pull CNV low to start conversion
+    nop [3]            ; Wait >30ns for conversion to start
+    
+    set x, 15          ; 16-bit counter (0-15)
+bitloop:
+    out pins, 1        ; Output MOSI bit
+    set pins, 1        ; SCK high
+    in pins, 1         ; Sample MISO (on same cycle as MOSI)
+    out y, 1            ; Writes a bit from OSR to scratch register y
+    set pins, 0        ; SCK low
+    jmp x-- bitloop    ; Loop for all 16 bits
+
+    nop         side 1  ; Pull CNV high to end conversion
+    in y, 16            ; transfers the y scratch register to ISR to be pushed out
+    push block         ; Push received 16-bit data
+.wrap

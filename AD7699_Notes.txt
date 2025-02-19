@@ -1,0 +1,6 @@
+Note that DIN operates on SCK's rising-edge and SDO operates on SCK's falling-edge. 
+Although the CFG is only 14 bits, it must be clocked on the same cycles at SDO which is 16 bits. Quite counter-intuitively, the MSB of both DIN and SDO are sent on the same clock cycle. 
+This means bit 13 of CFG is clocked into DIN on the rising edge of the first clock cycle and then SDO bit 15 (MSB) is clocked out on the falling edge of the first clock. 
+Important: SDO and DIN both are MSB-first format (unless readback CFG is enabled). 
+
+Reference Timing Diagram: Figure 39: Connection Diagram for AD7699 Without a Busy Indicator
